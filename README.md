@@ -2,7 +2,7 @@
 
 Unseal a [vault](https://www.vaultproject.io) with a docker container given only environment variables.
 
-![](https://img.shields.io/docker/pulls/blockloop/vault-unseal.svg)
+[![Foo](https://img.shields.io/docker/pulls/blockloop/vault-unseal.svg)](https://hub.docker.com/r/blockloop/vault-unseal/)
 
 This project was initially created to run as a kubernetes job to unseal a vault within the same cluster. This gives you the ability to pass env variables to a docker container and have it unseal a vault with the given keys. This image is based on the official vault image so many of the variables are the same. 
 
@@ -10,7 +10,7 @@ This project was initially created to run as a kubernetes job to unseal a vault 
 
 `VAULT_UNSEAL_KEY_X` - this is the format of the unseal keys. In Kubernetes these are stored in a secret store and mounted to the Vault Unsealer Job as environment variables.
 
-This container will loop up to 20 times, as many times as it can until vault is either unsealed or it returns an error. Each time it loops it checks the vault status and then, if the vault is still sealed, it runs `unseal` with the next key, or if it is unsealed, it exists 0. 
+This container will loop up to 15 times, as many times as it can until vault is either unsealed or it returns an error. Each time it loops it checks the vault status and then, if the vault is still sealed, it runs `unseal` with the next key, or if it is unsealed, it exists 0. 
 
 ## Instructions
 

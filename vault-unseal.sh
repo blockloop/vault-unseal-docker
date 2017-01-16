@@ -1,8 +1,12 @@
 #!/bin/bash
 
-for i in {1..20}; do
+VAULT_KEYS="$VAULT_UNSEAL_KEY_1 $VAULT_UNSEAL_KEY_2 $VAULT_UNSEAL_KEY_3 $VAULT_UNSEAL_KEY_4 $VAULT_UNSEAL_KEY_5 $VAULT_UNSEAL_KEY_6 $VAULT_UNSEAL_KEY_7 $VAULT_UNSEAL_KEY_8 $VAULT_UNSEAL_KEY_9 $VAULT_UNSEAL_KEY_10 $VAULT_UNSEAL_KEY_11 $VAULT_UNSEAL_KEY_12 $VAULT_UNSEAL_KEY_13 $VAULT_UNSEAL_KEY_14 $VAULT_UNSEAL_KEY_15"
+
+i=0
+for k in $VAULT_KEYS; do
     # https://github.com/hashicorp/vault/blob/c44f1c9817955d4c7cd5822a19fb492e1c2d0c54/command/status.go#L107
     # code reflects the seal status (0 unsealed, 2 sealed, 1 error).
+    i=$((i+1))
     vault status;
     st=$?
 
@@ -12,15 +16,13 @@ for i in {1..20}; do
     elif [ $st -eq 2 ]; then
         echo "vault is sealed"
         echo "unsealing with key $i"
-        v="VAULT_UNSEAL_KEY_$i"
-        v="${!v}"
 
-        if [ -z "$v" ]; then
-            echo "ran out of vault uneal keys at $i (VAULT_UNSEAL_KEY_$i is empty). terminating..."
+        if [ -z "$k" ]; then
+            echo "ran out of vault uneal keys at $i (VAULT_UNSEAL_KEY_$i is missing). terminating..."
             exit 1
         fi
 
-        vault useal "$v" > /dev/null
+        vault unseal "$k" > /dev/null
         code=$?
         if [ $? -ne 0 ] ; then
             echo "unseal returned a bad exit code ($code). terminating..."
@@ -32,3 +34,4 @@ for i in {1..20}; do
         exit 1
     fi
 done
+
